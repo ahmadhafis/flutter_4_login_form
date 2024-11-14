@@ -7,7 +7,7 @@ class AuthToken {
 
   factory AuthToken.fromJson(Map<String, dynamic> json) {
     return AuthToken(
-      token: json['token'],
+      token: json['data'],
     );
   }
 }

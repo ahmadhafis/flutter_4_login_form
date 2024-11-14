@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Text('User ID: ${user?.id}'),
                     Text('Name: ${user?.name}'),
-                    Text('Name: ${user?.balance}'),
+                    Text('Balance: ${user?.balance}'),
                   ],
                 );
               },
