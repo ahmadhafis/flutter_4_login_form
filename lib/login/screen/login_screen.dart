@@ -16,15 +16,25 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: BlocProvider<LoginCubit>(
-          create: (context) {
-            return LoginCubit(
-              authRepository: RepositoryProvider.of<AuthRepository>(context),
-            );
-          },
-          child: const LoginForm(),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.top,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: BlocProvider<LoginCubit>(
+                create: (context) {
+                  return LoginCubit(
+                    authRepository:
+                        RepositoryProvider.of<AuthRepository>(context),
+                  );
+                },
+                child: const LoginForm(),
+              ),
+            ),
+          ),
         ),
       ),
     );

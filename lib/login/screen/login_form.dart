@@ -17,22 +17,32 @@ class LoginForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(
-                content: Text("Authentication Failed"),
-              ),
+              const SnackBar(content: Text("Authentication Failed")),
             );
         }
       },
-      child: const Align(
-        alignment: Alignment(0, -1 / 3),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            InputUsername(),
-            Padding(padding: EdgeInsets.all(12)),
-            InputPassword(),
-            Padding(padding: EdgeInsets.all(12)),
-            ButtonSubmit(),
+            const Text(
+              'Login',
+              style: TextStyle(
+                color: Colors.pink,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.left,
+            ),
+            const SizedBox(height: 32),
+            const InputEmail(),
+            const SizedBox(height: 16),
+            const InputPassword(),
+            const SizedBox(height: 24),
+            const ButtonSubmit(),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -40,10 +50,8 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-class InputUsername extends StatelessWidget {
-  const InputUsername({
-    super.key,
-  });
+class InputEmail extends StatelessWidget {
+  const InputEmail({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +59,22 @@ class InputUsername extends StatelessWidget {
       buildWhen: (previous, current) => previous.username != current.username,
       builder: (context, state) {
         return TextField(
-          key: const Key('loginForm_usernameInput_textField'),
+          key: const Key('loginForm_emailInput_textField'),
           onChanged: (value) =>
               context.read<LoginCubit>().usernameChanged(value),
           decoration: InputDecoration(
             labelText: 'Username',
+            labelStyle: const TextStyle(color: Colors.grey),
             errorText:
                 state.username.displayError == UsernameValidationError.empty
                     ? 'invalid username'
                     : null,
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+            ),
           ),
         );
       },
@@ -68,55 +83,85 @@ class InputUsername extends StatelessWidget {
 }
 
 class InputPassword extends StatelessWidget {
-  const InputPassword({
-    super.key,
-  });
+  const InputPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
-        buildWhen: (previous, current) => previous.password != current.password,
-        builder: (context, state) {
-          return TextField(
-            key: const Key('loginForm_passwordInput_textField'),
-            onChanged: (value) =>
-                context.read<LoginCubit>().passwordChanged(value),
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: "password",
-              errorText: (() {
-                switch (state.password.displayError) {
-                  case PasswordValidationError.minimumLength:
-                    return 'Password minimum 6 characters';
-                  case PasswordValidationError.empty:
-                    return 'Password cannot be empty';
-                  default:
-                    return null;
-                }
-              })(),
+      buildWhen: (previous, current) => previous.password != current.password,
+      builder: (context, state) {
+        return TextField(
+          key: const Key('loginForm_passwordInput_textField'),
+          onChanged: (value) =>
+              context.read<LoginCubit>().passwordChanged(value),
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: 'Password',
+            labelStyle: const TextStyle(color: Colors.grey),
+            errorText: (() {
+              switch (state.password.displayError) {
+                case PasswordValidationError.minimumLength:
+                  return 'Password minimum 6 characters';
+                case PasswordValidationError.empty:
+                  return 'Password cannot be empty';
+                default:
+                  return null;
+              }
+            })(),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
             ),
-          );
-        });
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
 class ButtonSubmit extends StatelessWidget {
-  const ButtonSubmit({
-    super.key,
-  });
+  const ButtonSubmit({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(builder: (context, state) {
-      return state.status.isInProgress
-          ? const CircularProgressIndicator()
-          : ElevatedButton(
-              key: const Key('loginForm_continue_raisedButton'),
-              onPressed: () {
-                context.read<LoginCubit>().loginSubmitted();
-              },
-              child: const Text("Login"),
-            );
-    });
+    return BlocBuilder<LoginCubit, LoginState>(
+      builder: (context, state) {
+        return state.status.isInProgress
+            ? const CircularProgressIndicator()
+            : Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 233, 73, 108),
+                      Color.fromARGB(255, 245, 187, 237)
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ElevatedButton(
+                  key: const Key('loginForm_continue_raisedButton'),
+                  onPressed: () {
+                    context.read<LoginCubit>().loginSubmitted();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              );
+      },
+    );
   }
 }
